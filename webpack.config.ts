@@ -1,14 +1,18 @@
 import path from 'path';
 import webpack from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
+import type { Configuration as DevServerConfiguration } from "webpack-dev-server";
 
 type Mode = "production" | "development";
 
 interface EnvVariables {
-  mode: Mode
+  mode: Mode,
+  port: number
 }
 
 export default (env: EnvVariables) => {
+  const isDev = env.mode === "development";
+
   const config: webpack.Configuration = {
     mode: env.mode ?? 'development',
   
@@ -40,7 +44,15 @@ export default (env: EnvVariables) => {
     resolve: {
       extensions: ['.tsx', '.ts', '.js'],
     },
-   };
+
+    devServer: isDev ? {
+      port: env.port ?? "8800",
+      open: true,
+      static: './dist',
+    } : undefined,
+
+    devtool: isDev ? 'inline-source-map' : false,
+  }
 
    return config;
 };

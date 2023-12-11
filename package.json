@@ -5,7 +5,8 @@
   "private": true,
   "scripts": {
     "build:dev": "webpack --env mode=development",
-    "build:prod": "webpack --env mode=production"
+    "build:prod": "webpack --env mode=production",
+    "start": "webpack serve --env port=8000"
   },
   "repository": {
     "type": "git",
