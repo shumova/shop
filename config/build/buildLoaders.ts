@@ -36,14 +36,21 @@ export function buildLoaders(options: BuildOptions): ModuleOptions["rules"] {
 		],
 	}
 
-	const tsLoaders = {
+	const tsLoader = {
 		test: /\.tsx?$/,
-		use: 'ts-loader',
 		exclude: /node_modules/,
+		use: [
+			{
+				loader: 'ts-loader',
+				options: {
+					transpileOnly: isDev
+				}
+			}
+		]
 	}
 
 	return [
-		tsLoaders,
+		tsLoader,
 		scssLoaders,
 		assetLoader,
 		svgrLoader
