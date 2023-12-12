@@ -20,7 +20,7 @@ export const App = () => {
 
 	return (
 		<>
-			<div>PLATFORM={__PLATFORM__}</div>
+			<div data-testid='App.DataTestId'>PLATFORM={__PLATFORM__}</div>
 			<img width={100} src={earthPng} alt="Earth" />
 			<img width={100} src={avatarJpeg} alt="Mariia Shumova" />
 			<div>

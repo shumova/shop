@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkshop=self.webpackChunkshop||[]).push([[196],{196:(e,t,u)=>{u.r(t),u.d(t,{default:()=>n});const n=function(){return React.createElement("div",null,"About")}}}]);
