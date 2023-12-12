@@ -6,8 +6,8 @@ import { BuildOptions } from './types/types';
 
 export function buildPlugins(options: BuildOptions): Configuration['plugins'] {
 	const {mode, paths} = options;
-	const isDev = mode === "development";
-  const isProd = mode === "development";
+	const isDev = mode === 'development';
+  const isProd = mode === 'production';
 
 	const plugins: Configuration['plugins'] = [
 		new HtmlWebpackPlugin({
