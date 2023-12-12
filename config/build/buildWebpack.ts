@@ -32,6 +32,6 @@ export function buildWebpack(options: BuildOptions): webpack.Configuration {
 
     devServer: isDev ? buildDevServer(options) : undefined,
 
-    devtool: isDev ? 'inline-source-map' : false,
+    devtool: isDev ? 'eval-cheap-module-source-map' : 'source-map',
   }
 }
