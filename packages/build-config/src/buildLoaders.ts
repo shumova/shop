@@ -1,84 +1,82 @@
+import {ModuleOptions} from "webpack";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
-import { ModuleOptions } from "webpack";
-import { BuildOptions } from "./types/types";
-import { buildBabelLoader } from "./babel/buildBabelLoader";
 import ReactRefreshTypeScript from "react-refresh-typescript";
+import {BuildOptions} from "./types/types";
 
-export function buildLoaders(options: BuildOptions): ModuleOptions["rules"] {
-	const {mode} = options;
+export function buildLoaders(options: BuildOptions): ModuleOptions['rules'] {
+    const isDev = options.mode === 'development';
 
-	const isProd = mode === 'production';
-	const isDev = mode === 'development';
+    const assetLoader = {
+        test: /\.(png|jpg|jpeg|gif)$/i,
+        type: 'asset/resource',
+    }
 
-	const assetLoader = {
-		test: /\.(png|jpg|jpeg|gif)$/i,
-		type: 'asset/resource'
-	}
+    const svgrLoader = {
+        test: /\.svg$/i,
+        use: [
+            {
+                loader: '@svgr/webpack',
+                options: {
+                    icon: true,
+                    svgoConfig: {
+                        plugins: [
+                            {
+                                name: 'convertColors',
+                                params: {
+                                    currentColor: true,
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        ],
+    }
 
-	const svgrLoader = {
-		test: /\.svg$/i,
-		use: [{ loader: '@svgr/webpack', options: { icon: true } }]
-	}
+    const cssLoaderWithModules = {
+        loader: "css-loader",
+        options: {
+            modules: {
+                localIdentName: isDev ? '[path][name]__[local]' : '[hash:base64:8]'
+            },
+        },
+    }
 
-	const cssLoaderWithModules = {
-		loader: "css-loader",
-		options: {
-			modules: {
-				localIdentName: isDev ? '[path][name]__[local]' : '[hash:base64:8]'
-			}			
-		}
-	}
-
-	const scssLoaders = {
-		test: /\.s[ac]ss$/i,
-		use: [
-			isProd ? MiniCssExtractPlugin.loader : 'style-loader',
-			cssLoaderWithModules,
-			'sass-loader',
-		],
-	}
-
-	const tsLoader = {
-		test: /\.tsx?$/,
-		exclude: /node_modules/,
-		use: [
-			{
-				loader: 'ts-loader',
-				options: {
-					transpileOnly: isDev,
-					getCustomTransformers: () => ({
-						before: [isDev && ReactRefreshTypeScript()].filter(Boolean),
-					}),
-				}
-			}
-		]
-	}
-
-	// const babelLoader = {
-	// 	test: /\.tsx?$/,
-	// 	exclude: /node_modules/,
-	// 	use: {
-	// 		loader: "babel-loader",
-	// 		options: {
-	// 			presets: [
-	// 				'@babel/preset-env', 
-	// 				'@babel/preset-typescript', 
-	// 				['@babel/preset-react', {
-	// 					runtime: isDev ? 'automatic' : 'classic',
-	// 				}]
-	// 			]
-	// 		}
-	// 	}
-	// }
+    const scssLoader = {
+        test: /\.s[ac]ss$/i,
+        use: [
+            // Creates `style` nodes from JS strings
+            isDev ? 'style-loader' : MiniCssExtractPlugin.loader,
+            // Translates CSS into CommonJS
+            cssLoaderWithModules,
+            // Compiles Sass to CSS
+            "sass-loader",
+        ],
+    }
 
 
-	// const babelLoader = buildBabelLoader(options)
 
-	return [
-		tsLoader,
-		// babelLoader,
-		scssLoaders,
-		assetLoader,
-		svgrLoader
-	]
+    const tsLoader = {
+        exclude: /node_modules/,
+        test: /\.tsx?$/,
+        use: [
+            {
+                loader: 'ts-loader',
+                options: {
+                    transpileOnly: true,
+                    getCustomTransformers: () => ({
+                        before: [isDev && ReactRefreshTypeScript()].filter(Boolean),
+                    }),
+                }
+            }
+        ]
+    }
+
+
+    return [
+        assetLoader,
+        scssLoader,
+        tsLoader,
+        svgrLoader
+    ]
 }
